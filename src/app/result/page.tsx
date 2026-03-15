@@ -242,7 +242,6 @@ function ResultContent() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [showDetails, setShowDetails] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const shareCardRef = useRef<HTMLDivElement>(null);
 
