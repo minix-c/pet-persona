@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FFF5EC;
+  --foreground: #2C3E50;
+  
+  /* 主色调 */
+  --primary-orange: #FF9A56;
+  --primary-orange-dark: #FF7A45;
+  --primary-cream: #FFF5EC;
+  --primary-caramel: #8B5A3C;
+  
+  /* 辅色 */
+  --secondary-mint: #7DD3C0;
+  --secondary-mint-dark: #5BC0A8;
+  --secondary-sky: #87CEEB;
+  --secondary-lavender: #C5A3D9;
+  
+  /* 强调色 */
+  --accent-yellow: #FFD93D;
+  --accent-coral: #FF8B94;
+  --accent-butter: #FFE4B5;
+  
+  /* 中性色 */
+  --neutral-dark: #2C3E50;
+  --neutral-gray: #6B7280;
+  --neutral-light: #E5E7EB;
+  --neutral-white: #FFFFFF;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* 主按钮样式 */
+.btn-primary {
+  background: linear-gradient(135deg, #FF9A56 0%, #FF7A45 100%);
+  border-radius: 50px;
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(255, 154, 86, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 12px rgba(255, 154, 86, 0.3);
+}
+
+/* 选中态渐变 */
+.bg-selected {
+  background: linear-gradient(135deg, #7DD3C0 0%, #5BC0A8 100%);
+}
+
+/* 首页背景渐变 */
+.bg-landing {
+  background: linear-gradient(180deg, #FFF5EC 0%, #FFE4B5 100%);
+}
+
+/* 结果页背景渐变 */
+.bg-result {
+  background: linear-gradient(180deg, #FFF5EC 0%, #FFE4B5 50%, #FFF5EC 100%);
+}
+
+/* 进度条渐变 */
+.progress-gradient {
+  background: linear-gradient(90deg, #FF9A56 0%, #7DD3C0 100%);
+}
+
+/* 漂浮动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* 选项选中动效 */
+@keyframes optionSelect {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+.animate-option-select {
+  animation: optionSelect 0.3s ease-out;
+}
+
+/* 滑入动画 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 卡片入场动画 */
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-enter {
+  animation: cardEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate {
+  animation: rotate 20s linear infinite;
+}
