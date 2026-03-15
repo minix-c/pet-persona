@@ -448,24 +448,25 @@ function ResultContent() {
               性格五维图
             </h3>
             
-            {/* 简化的五维指示 */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* SVG 雷达图 */}
+            <RadarChart typeCode={personality.code} size={260} />
+            
+            {/* 维度说明 */}
+            <div className="grid grid-cols-5 gap-1 mt-4 text-center">
               {[
-                { label: '外向性 (E)', color: '#FF9A56', desc: '社交达人' },
-                { label: '稳定性 (S)', color: '#7DD3C0', desc: '情绪稳定' },
-                { label: '宜人性 (F)', color: '#FF8B94', desc: '友善亲和' },
-                { label: '活动性 (A)', color: '#87CEEB', desc: '活力充沛' },
-                { label: '可训练性 (T)', color: '#C5A3D9', desc: '聪明好学' },
+                { label: 'E', desc: '外向', color: '#FF9A56' },
+                { label: 'S', desc: '顺从', color: '#7DD3C0' },
+                { label: 'A', desc: '活跃', color: '#87CEEB' },
+                { label: 'F', desc: '友善', color: '#FF8B94' },
+                { label: 'C', desc: '聪明', color: '#C5A3D9' },
               ].map((dim, i) => (
-                <div key={i} className="flex items-center gap-2">
+                <div key={i} className="flex flex-col items-center">
                   <div 
-                    className="w-3 h-3 rounded-full flex-shrink-0"
+                    className="w-2.5 h-2.5 rounded-full mb-1"
                     style={{ backgroundColor: dim.color }}
                   />
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-[#2C3E50]">{dim.label}</div>
-                    <div className="text-xs text-[#9CA3AF]">{dim.desc}</div>
-                  </div>
+                  <span className="text-[10px] font-bold" style={{ color: dim.color }}>{dim.label}</span>
+                  <span className="text-[9px] text-gray-400">{dim.desc}</span>
                 </div>
               ))}
             </div>

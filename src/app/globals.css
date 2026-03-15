@@ -2,45 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   莫兰迪治愈系风格 - CSS 变量定义 v2
+   ======================================== */
+
 :root {
-  --background: #FFF5EC;
-  --foreground: #2C3E50;
+  /* 莫兰迪主色调 */
+  --background: #F5F0E8;           /* 燕麦奶背景 */
+  --foreground: #5A4A42;           /* 深褐文字 */
   
-  /* 主色调 */
-  --primary-orange: #FF9A56;
-  --primary-orange-dark: #FF7A45;
-  --primary-cream: #FFF5EC;
-  --primary-caramel: #8B5A3C;
+  /* 主色 */
+  --primary: #C4A484;              /* 奶咖棕 */
+  --primary-dark: #D4A574;         /* 焦糖琥珀 */
   
   /* 辅色 */
-  --secondary-mint: #7DD3C0;
-  --secondary-mint-dark: #5BC0A8;
-  --secondary-sky: #87CEEB;
-  --secondary-lavender: #C5A3D9;
-  
-  /* 强调色 */
-  --accent-yellow: #FFD93D;
-  --accent-coral: #FF8B94;
-  --accent-butter: #FFE4B5;
+  --secondary-pink: #E8D5D5;       /* 雾粉 */
+  --secondary-blue: #B5C4C9;       /* 雾霾蓝 */
+  --secondary-green: #B8C4B8;      /* 鼠尾草绿 */
   
   /* 中性色 */
-  --neutral-dark: #2C3E50;
-  --neutral-gray: #6B7280;
-  --neutral-light: #E5E7EB;
-  --neutral-white: #FFFFFF;
+  --text-primary: #5A4A42;         /* 深褐 */
+  --text-secondary: #8A7B72;       /* 暖灰 */
+  --divider: #CFC8C0;              /* 浅灰 */
+  
+  /* 扩展背景色 */
+  --background-light: #FAF8F4;     /* 燕麦奶浅 */
+  --background-card: #FDFBF8;      /* 卡片背景 */
+  
+  /* 圆角变量 */
+  --radius-card: 20px;             /* 卡片圆角 */
+  --radius-button: 28px;           /* 按钮圆角（胶囊形） */
+  --radius-sm: 12px;               /* 小圆角 */
+  --radius-lg: 24px;               /* 大圆角 */
+  --radius-full: 9999px;           /* 完全圆形 */
+  
+  /* 阴影变量 - 柔和弥散阴影 */
+  --shadow-sm: 0 2px 8px rgba(90, 74, 66, 0.06);
+  --shadow-md: 0 4px 16px rgba(90, 74, 66, 0.08);
+  --shadow-lg: 0 8px 24px rgba(90, 74, 66, 0.10);
+  --shadow-xl: 0 12px 32px rgba(90, 74, 66, 0.12);
+  --shadow-glow: 0 4px 20px rgba(196, 164, 132, 0.25);
+  --shadow-card: 0 4px 20px rgba(154, 139, 122, 0.08), 
+                 0 1px 4px rgba(154, 139, 122, 0.04);
+  
+  /* 间距变量 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* 字体变量 */
+  --font-family: 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #2A2520;
+    --background-light: #3A3530;
+    --background-card: #4A4540;
+    --foreground: #D4C8BC;
+    --text-primary: #E8DDD4;
+    --text-secondary: #9B9080;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
 }
 
 @layer utilities {
@@ -49,55 +80,167 @@ body {
   }
 }
 
-/* 主按钮样式 */
+/* ========================================
+   莫兰迪渐变色定义
+   ======================================== */
+
+/* 页面背景渐变 - 柔和燕麦奶渐变 */
+.bg-gradient-main {
+  background: linear-gradient(180deg, #F5F0E8 0%, #F5E6D3 50%, #EDE5D8 100%);
+}
+
+/* 卡片渐变背景 */
+.bg-gradient-card {
+  background: linear-gradient(145deg, 
+    var(--background-card) 0%, 
+    var(--background-light) 100%
+  );
+}
+
+/* 主按钮渐变 - 奶咖棕渐变 */
+.btn-gradient-primary {
+  background: linear-gradient(135deg, #C4A484 0%, #D4A574 100%);
+  box-shadow: var(--shadow-glow);
+}
+
+/* 选中态渐变 - 雾粉渐变 */
+.bg-gradient-selected {
+  background: linear-gradient(135deg, 
+    var(--secondary-pink) 0%, 
+    #D8C5C5 100%
+  );
+}
+
+/* 正向反馈渐变 - 鼠尾草绿 */
+.bg-gradient-success {
+  background: linear-gradient(135deg, 
+    var(--secondary-green) 0%, 
+    #98B098 100%
+  );
+}
+
+/* 雾霾蓝渐变 */
+.bg-gradient-blue {
+  background: linear-gradient(135deg, 
+    var(--secondary-blue) 0%, 
+    #9AB4B9 100%
+  );
+}
+
+/* 温暖渐变 - 适合特殊装饰 */
+.bg-gradient-warm {
+  background: linear-gradient(135deg, 
+    #F5E6D8 0%, 
+    var(--secondary-pink) 50%,
+    #E8E0D8 100%
+  );
+}
+
+/* 弥散光晕效果 */
+.bg-glow {
+  background: radial-gradient(ellipse at center, 
+    rgba(196, 164, 132, 0.15) 0%, 
+    transparent 70%
+  );
+}
+
+/* ========================================
+   组件样式
+   ======================================== */
+
+/* 主按钮样式 - 莫兰迪胶囊按钮 */
 .btn-primary {
-  background: linear-gradient(135deg, #FF9A56 0%, #FF7A45 100%);
-  border-radius: 50px;
+  background: linear-gradient(135deg, #C4A484 0%, #D4A574 100%);
+  border-radius: var(--radius-button);
   color: #FFFFFF;
   font-weight: 600;
-  box-shadow: 0 4px 20px rgba(255, 154, 86, 0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(196, 164, 132, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(196, 164, 132, 0.45);
 }
 
 .btn-primary:active {
-  transform: scale(0.96);
-  box-shadow: 0 2px 12px rgba(255, 154, 86, 0.3);
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 2px 12px rgba(196, 164, 132, 0.3);
 }
 
-/* 选中态渐变 */
-.bg-selected {
-  background: linear-gradient(135deg, #7DD3C0 0%, #5BC0A8 100%);
+/* 次按钮样式 */
+.btn-secondary {
+  background: var(--background-card);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+  font-weight: 500;
+  border: 1px solid rgba(155, 139, 122, 0.2);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 首页背景渐变 */
-.bg-landing {
-  background: linear-gradient(180deg, #FFF5EC 0%, #FFE4B5 100%);
+.btn-secondary:hover {
+  background: var(--background-light);
+  box-shadow: var(--shadow-md);
 }
 
-/* 结果页背景渐变 */
-.bg-result {
-  background: linear-gradient(180deg, #FFF5EC 0%, #FFE4B5 50%, #FFF5EC 100%);
+/* 卡片样式 - 莫兰迪圆角卡片 */
+.card {
+  background: var(--background-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(155, 139, 122, 0.08);
 }
 
-/* 进度条渐变 */
-.progress-gradient {
-  background: linear-gradient(90deg, #FF9A56 0%, #7DD3C0 100%);
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 选中态样式 */
+.selected {
+  background: var(--secondary-pink);
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(196, 164, 132, 0.4);
+}
+
+/* 输入框样式 */
+.input-morandi {
+  background: var(--background-light);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(155, 139, 122, 0.15);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.input-morandi:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(196, 164, 132, 0.15);
+}
+
+/* ========================================
+   动画效果
+   ======================================== */
 
 /* 漂浮动画 */
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(5deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
 }
 
 /* 选项选中动效 */
 @keyframes optionSelect {
   0% { transform: scale(1); }
-  50% { transform: scale(0.98); }
+  40% { transform: scale(0.96); }
   100% { transform: scale(1); }
 }
 
@@ -137,6 +280,34 @@ body {
   animation: cardEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 柔和淡入 */
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-soft {
+  animation: fadeInSoft 0.6s ease-out;
+}
+
+/* 脉动效果 - 用于选中态 */
+@keyframes pulseSoft {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(196, 164, 132, 0.4); 
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(196, 164, 132, 0); 
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
 /* 旋转动画 */
 @keyframes rotate {
   from { transform: rotate(0deg); }
@@ -145,4 +316,51 @@ body {
 
 .animate-rotate {
   animation: rotate 20s linear infinite;
+}
+
+/* 呼吸效果 */
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.02); 
+    opacity: 0.9;
+  }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* ========================================
+   工具类
+   ======================================== */
+
+/* 文字工具类 */
+.text-heading {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.text-body {
+  color: var(--foreground);
+}
+
+.text-muted {
+  color: var(--text-secondary);
+}
+
+/* 弹性容器 */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 全屏背景 */
+.bg-fullscreen {
+  min-height: 100vh;
+  background: var(--background);
 }
