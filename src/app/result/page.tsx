@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { toPng } from "html-to-image";
 import { dogPersonalityTypes } from "@/data/personalityTypes";
-import { Download, RotateCcw, ChevronDown } from "lucide-react";
+import { Download, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -597,13 +597,11 @@ function ResultContent() {
 
         <FadeIn delay={650}>
           {/* 再测一次 */}
-          <div className="text-center mb-6">
-            <Link
-              href="/quiz"
-              className="inline-flex items-center gap-2 text-[#9CA3AF] text-sm hover:text-[#6B7280] transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-              再测一次
+          <div className="mb-6">
+            <Link href="/quiz">
+              <button className="w-full py-4 bg-[#C4A484] text-white rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all active:scale-97">
+                🔄 再测一次
+              </button>
             </Link>
           </div>
 

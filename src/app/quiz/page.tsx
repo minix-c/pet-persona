@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Answer, DimensionScores } from "@/types";
 import { dogQuestions } from "@/data/questions";
 import { getPersonalityType } from "@/data/personalityTypes";
-import { ChevronLeft, Home } from "lucide-react";
+import { ChevronLeft, Home, Check } from "lucide-react";
 
 // 动画组件
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -99,7 +99,7 @@ export default function QuizPage() {
         {/* 返回首页按钮 */}
         <button
           onClick={() => router.push('/')}
-          className="flex items-center justify-center w-8 h-8 rounded-lg mb-3 transition-all duration-200 hover:bg-[#8B5A3C]/10"
+          className="flex items-center justify-center w-8 h-8 rounded-lg mb-1 transition-all duration-200 hover:bg-[#8B5A3C]/10"
           title="返回首页"
         >
           <Home className="w-5 h-5 text-[#8B5A3C]" />
@@ -109,13 +109,13 @@ export default function QuizPage() {
           <button
             onClick={handlePrevious}
             disabled={currentIndex === 0}
-            className={`flex items-center gap-1 text-sm transition-colors ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium transition-all ${
               currentIndex === 0
                 ? "text-[#E5E7EB] cursor-not-allowed"
-                : "text-[#6B7280] hover:text-[#FF9A56]"
+                : "text-[#6B7280] hover:text-[#FF9A56] hover:bg-[#FF9A56]/10"
             }`}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-5 h-5" />
             上一题
           </button>
           <span className="text-sm font-semibold text-[#FF9A56]">
@@ -203,15 +203,15 @@ export default function QuizPage() {
                   <span className={`font-medium flex-1 ${isSelected ? 'text-white font-semibold' : 'text-[#2C3E50]'}`}>
                     {option.label}
                   </span>
+                  {/* 选中图标 */}
+                  {isSelected && (
+                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center animate-scale-in">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
                 </button>
               );
             })}
-          </div>
-
-          {/* 量表两端标签 */}
-          <div className="flex justify-between px-1 mt-4 text-xs text-[#9CA3AF]">
-            <span>非常不同意</span>
-            <span>非常同意</span>
           </div>
         </FadeIn>
 

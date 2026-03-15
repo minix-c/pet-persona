@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { Dog, Heart, Share2 } from "lucide-react";
+import { Dog, Cat, Heart, Share2 } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
+  const [selectedPet, setSelectedPet] = useState<"dog" | "cat">("dog");
+
   return (
     <div className="min-h-screen bg-landing flex flex-col">
       {/* 装饰元素 - 漂浮爪印 */}
@@ -61,6 +66,30 @@ export default function Home() {
             <div className="text-sm font-semibold text-[#2C3E50]">分享</div>
             <div className="text-xs text-[#6B7280]">专属名片</div>
           </div>
+        </div>
+
+        {/* 宠物类型选择 */}
+        <div className="flex gap-3 mb-6">
+          <button
+            onClick={() => setSelectedPet("dog")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${
+              selectedPet === "dog"
+                ? "bg-[#C4A484] text-white shadow-md"
+                : "bg-white text-[#6B7280] hover:bg-[#F5F0E8]"
+            }`}
+            style={{ boxShadow: selectedPet === "dog" ? '0 4px 12px rgba(196, 164, 132, 0.3)' : '0 2px 8px rgba(0,0,0,0.04)' }}
+          >
+            <Dog className="w-5 h-5" />
+            <span>狗狗测试</span>
+          </button>
+          <button
+            disabled
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium bg-gray-100 text-gray-400 cursor-not-allowed"
+          >
+            <Cat className="w-5 h-5" />
+            <span>猫咪测试</span>
+            <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">即将上线</span>
+          </button>
         </div>
 
         {/* CTA Button - 暖阳橙渐变，胶囊形 */}

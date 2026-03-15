@@ -33,7 +33,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#FF9A56",
   },
   {
-    code: "ESTG",
+    code: "ESTC",
     name: "好奇探险家",
     emoji: "🧭",
     slogan: "世界那么大，本汪想去闻闻！",
@@ -93,7 +93,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#F1C40F",
   },
   {
-    code: "ESFG",
+    code: "ESFC",
     name: "温暖老好人",
     emoji: "🧣",
     slogan: "温柔是唯一的超能力。",
@@ -155,7 +155,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#3498DB",
   },
   {
-    code: "EITG",
+    code: "EITC",
     name: "独立思想家",
     emoji: "🎓",
     slogan: "我有我的节奏，但我依然爱你。",
@@ -215,7 +215,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#9B59B6",
   },
   {
-    code: "EIFG",
+    code: "EIFC",
     name: "淡定观察家",
     emoji: "👁️",
     slogan: "看淡一切，只对你认真。",
@@ -277,7 +277,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#F8C471",
   },
   {
-    code: "ISTG",
+    code: "ISTC",
     name: "敏感小保镖",
     emoji: "🛡️",
     slogan: "小小的身体，大大的忠诚。",
@@ -337,7 +337,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#95A5A6",
   },
   {
-    code: "ISFG",
+    code: "ISFC",
     name: "高冷独行侠",
     emoji: "🐺",
     slogan: "独来独往，但心里有你。",
@@ -399,7 +399,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#7F8C8D",
   },
   {
-    code: "IITG",
+    code: "IITC",
     name: "社恐思想家",
     emoji: "🤔",
     slogan: "想很多，动很少，但爱不少。",
@@ -459,7 +459,7 @@ export const dogPersonalityTypes: PersonalityType[] = [
     color: "#D7BDE2",
   },
   {
-    code: "IIFG",
+    code: "IIFC",
     name: "神秘隐士",
     emoji: "🌙",
     slogan: "远离喧嚣，独守一方宁静。",
@@ -496,67 +496,21 @@ export function getPersonalityType(scores: {
   stability: number;
   trainability: number;
   activity: number;
-  friendliness: number;
 }): PersonalityType {
-  // 取绝对值最大的两个维度
-  const dimensions = [
-    { key: "extraversion", score: scores.extraversion, positive: "E", negative: "I" },
-    { key: "stability", score: scores.stability, positive: "S", negative: "N" },
-    { key: "trainability", score: scores.trainability, positive: "T", negative: "F" },
-    { key: "activity", score: scores.activity, positive: "A", negative: "C" },
-    { key: "friendliness", score: scores.friendliness, positive: "F", negative: "G" },
-  ];
+  // 每个维度独立判断正负，生成4字母代码
+  const code = [
+    scores.extraversion >= 0 ? 'E' : 'I',    // E-I: 外向 vs 内向
+    scores.stability >= 0 ? 'S' : 'N',       // S-N: 稳定 vs 敏感
+    scores.trainability >= 0 ? 'T' : 'F',    // T-F: 可训练性高 vs 低
+    scores.activity >= 0 ? 'A' : 'C'         // A-C: 活跃 vs 慵懒
+  ].join('');
 
-  // 按绝对值排序
-  const sorted = dimensions.sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
-  
-  // 取前两个维度生成代码
-  const primary = sorted[0];
-  const secondary = sorted[1];
-  
-  const primaryCode = primary.score >= 0 ? primary.positive : primary.negative;
-  const secondaryCode = secondary.score >= 0 ? secondary.positive : secondary.negative;
-  
-  // 生成四字母代码（简化版：基于前两个维度 + 第三维度倾向）
-  const third = sorted[2];
-  const thirdCode = third.score >= 0 ? third.positive : third.negative;
-  
-  const code = primaryCode + secondaryCode + thirdCode + "A"; // 第四位暂用A
-  
   // 尝试直接匹配四字母代码
   const found = dogPersonalityTypes.find((t) => t.code === code);
   if (found) return found;
-  
-  // 如果没有直接匹配，尝试前两位+第三位的组合
-  const code3 = primaryCode + secondaryCode + thirdCode;
-  const typeMap: Record<string, string> = {
-    // ESTx
-    "EST": "ESTA",
-    // EITx  
-    "EIT": "EITG",
-    // ESFx
-    "ESF": "ESFA",
-    // EIFx
-    "EIF": "EIFA",
-    // ISTx
-    "IST": "ISTG",
-    // IITx
-    "IIT": "IITG",
-    // ISFx
-    "ISF": "ISFG",
-    // IIFx
-    "IIF": "IIFG",
-    // EIA - 独立活跃
-    "EIA": "EITA",
-    "EIC": "EITG",
-    "IIA": "IITA",
-    "IIC": "IIFG",
-    "ISA": "ISTA",
-    "ISC": "ISTG",
-  };
 
-  const matchedCode = typeMap[code3] || typeMap[primaryCode + secondaryCode] || "ESTA";
-  return dogPersonalityTypes.find((t) => t.code === matchedCode) || dogPersonalityTypes[0];
+  // 如果没有直接匹配，返回默认值 ESTA
+  return dogPersonalityTypes[0];
 }
 
 export default dogPersonalityTypes;
