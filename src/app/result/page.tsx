@@ -258,7 +258,7 @@ function ResultContent() {
             
             {/* 再测一次 */}
             <Link
-              href="/quiz"
+              href="/pet-persona/quiz"
               className="w-full py-3 text-center text-[#9CA3AF] text-sm hover:text-[#6B7280] transition-colors flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
