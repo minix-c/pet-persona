@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Answer, DimensionScores } from "@/types";
 import { dogQuestions } from "@/data/questions";
 import { getPersonalityType } from "@/data/personalityTypes";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Home } from "lucide-react";
 
 // 动画组件
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -96,6 +96,15 @@ export default function QuizPage() {
       <div className="sticky top-0 bg-white/90 backdrop-blur-md z-10 px-5 py-4"
         style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
       >
+        {/* 返回首页按钮 */}
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center justify-center w-8 h-8 rounded-lg mb-3 transition-all duration-200 hover:bg-[#8B5A3C]/10"
+          title="返回首页"
+        >
+          <Home className="w-5 h-5 text-[#8B5A3C]" />
+        </button>
+
         <div className="flex items-center justify-between mb-3">
           <button
             onClick={handlePrevious}

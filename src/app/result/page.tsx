@@ -7,6 +7,240 @@ import { dogPersonalityTypes } from "@/data/personalityTypes";
 import { Download, RotateCcw } from "lucide-react";
 import Link from "next/link";
 
+// 五维雷达图组件
+interface RadarChartProps {
+  typeCode: string;
+  size?: number;
+}
+
+function RadarChart({ typeCode, size = 280 }: RadarChartProps) {
+  // 从 personality code 反向推算五维得分
+  const getDimensionScores = (code: string) => {
+    const scores = {
+      E: 50, // 外向-内向 (E-I)
+      S: 50, // 顺从-主导 (S-D)
+      A: 50, // 活跃-慵懒 (A-L)
+      F: 50, // 友善-警惕 (F-W)
+      C: 50, // 聪明-憨厚 (C-S)
+    };
+
+    // 根据 code 的每一位调整得分
+    // Code 格式: 第1位=E/I, 第2位=S/?, 第3位=T/F, 第4位=A/C
+    // 映射到五维: E, S, A, F, C
+    
+    if (code.length >= 1) {
+      const first = code[0];
+      if (first === 'E') scores.E = 85;
+      else if (first === 'I') scores.E = 15;
+    }
+    
+    if (code.length >= 2) {
+      const second = code[1];
+      if (second === 'S') scores.S = 80;
+      else if (second === 'I' || second === 'N') scores.S = 20; // I代表内向，对应主导性
+    }
+    
+    if (code.length >= 3) {
+      const third = code[2];
+      // T=聪明(F), F=友善但这里我们用T/C映射到C维度
+      if (third === 'T') scores.C = 82;
+      else if (third === 'F') scores.C = 25;
+      else if (third === 'A') scores.C = 78;
+      else if (third === 'G') scores.C = 22;
+    }
+    
+    if (code.length >= 4) {
+      const fourth = code[3];
+      if (fourth === 'A') scores.A = 80;
+      else if (fourth === 'C' || fourth === 'G') scores.A = 20;
+    }
+    
+    // 第四个维度: F=友善, G=警惕
+    if (code.includes('F') && !code.startsWith('F')) {
+      scores.F = 78;
+    } else if (code.includes('G')) {
+      scores.F = 22;
+    } else if (code.includes('T') && code[2] !== 'T') {
+      scores.F = 75;
+    }
+    
+    // 根据具体类型微调
+    const typeAdjustments: Record<string, Partial<typeof scores>> = {
+      'ESTA': { E: 88, S: 75, A: 85, F: 82, C: 80 },
+      'ESTG': { E: 82, S: 78, A: 88, F: 25, C: 20 },
+      'ESFA': { E: 85, S: 72, A: 20, F: 88, C: 85 },
+      'ESFG': { E: 78, S: 80, A: 18, F: 85, C: 18 },
+      'EITA': { E: 82, S: 30, A: 75, F: 22, C: 88 },
+      'EITG': { E: 75, S: 25, A: 72, F: 28, C: 20 },
+      'EIFA': { E: 78, S: 28, A: 22, F: 25, C: 85 },
+      'EIFG': { E: 70, S: 35, A: 18, F: 22, C: 18 },
+      'ISTA': { E: 20, S: 78, A: 82, F: 75, C: 85 },
+      'ISTG': { E: 18, S: 75, A: 78, F: 20, C: 22 },
+      'ISFA': { E: 22, S: 72, A: 20, F: 85, C: 82 },
+      'ISFG': { E: 15, S: 80, A: 15, F: 78, C: 15 },
+      'IITA': { E: 18, S: 25, A: 85, F: 20, C: 88 },
+      'IITG': { E: 15, S: 22, A: 78, F: 18, C: 20 },
+      'IIFA': { E: 20, S: 28, A: 18, F: 22, C: 85 },
+      'IIFG': { E: 12, S: 25, A: 12, F: 18, C: 15 },
+    };
+    
+    if (typeAdjustments[code]) {
+      Object.assign(scores, typeAdjustments[code]);
+    }
+    
+    return scores;
+  };
+
+  const scores = getDimensionScores(typeCode);
+  
+  // 维度配置
+  const dimensions = [
+    { key: 'E', label: 'E', subLabel: '外向', fullLabel: '外向-内向', value: scores.E, color: '#FF9A56' },
+    { key: 'S', label: 'S', subLabel: '顺从', fullLabel: '顺从-主导', value: scores.S, color: '#7DD3C0' },
+    { key: 'A', label: 'A', subLabel: '活跃', fullLabel: '活跃-慵懒', value: scores.A, color: '#87CEEB' },
+    { key: 'F', label: 'F', subLabel: '友善', fullLabel: '友善-警惕', value: scores.F, color: '#FF8B94' },
+    { key: 'C', label: 'C', subLabel: '聪明', fullLabel: '聪明-憨厚', value: scores.C, color: '#C5A3D9' },
+  ];
+
+  const center = size / 2;
+  const radius = size * 0.35;
+  const angleStep = (Math.PI * 2) / 5;
+  const startAngle = -Math.PI / 2; // 从顶部开始
+
+  // 计算多边形顶点
+  const getPoint = (value: number, index: number) => {
+    const angle = startAngle + index * angleStep;
+    const r = (value / 100) * radius;
+    return {
+      x: center + r * Math.cos(angle),
+      y: center + r * Math.sin(angle),
+    };
+  };
+
+  // 生成网格线
+  const gridLevels = [20, 40, 60, 80, 100];
+  
+  // 生成数据多边形点
+  const dataPoints = dimensions.map((d, i) => getPoint(d.value, i));
+  const polygonPoints = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+  // 标签位置（在外围）
+  const getLabelPosition = (index: number, distance: number) => {
+    const angle = startAngle + index * angleStep;
+    return {
+      x: center + distance * Math.cos(angle),
+      y: center + distance * Math.sin(angle),
+    };
+  };
+
+  return (
+    <svg width={size} height={size} className="mx-auto">
+      {/* 背景网格 - 五边形层级 */}
+      {gridLevels.map((level) => {
+        const levelPoints = dimensions.map((_, i) => {
+          const angle = startAngle + i * angleStep;
+          const r = (level / 100) * radius;
+          return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
+        }).join(' ');
+        
+        return (
+          <polygon
+            key={level}
+            points={levelPoints}
+            fill="none"
+            stroke="#E5E7EB"
+            strokeWidth="1"
+            strokeDasharray={level === 100 ? "none" : "4,4"}
+          />
+        );
+      })}
+
+      {/* 轴线 */}
+      {dimensions.map((_, i) => {
+        const angle = startAngle + i * angleStep;
+        const endX = center + radius * Math.cos(angle);
+        const endY = center + radius * Math.sin(angle);
+        return (
+          <line
+            key={i}
+            x1={center}
+            y1={center}
+            x2={endX}
+            y2={endY}
+            stroke="#E5E7EB"
+            strokeWidth="1"
+          />
+        );
+      })}
+
+      {/* 数据填充区域 */}
+      <polygon
+        points={polygonPoints}
+        fill="rgba(255, 154, 86, 0.35)"
+        stroke="#FF9A56"
+        strokeWidth="2.5"
+        className="transition-all duration-700 ease-out"
+      />
+
+      {/* 数据点 */}
+      {dataPoints.map((point, i) => (
+        <circle
+          key={i}
+          cx={point.x}
+          cy={point.y}
+          r="5"
+          fill={dimensions[i].color}
+          stroke="#FFFFFF"
+          strokeWidth="2"
+          className="transition-all duration-700 ease-out"
+        />
+      ))}
+
+      {/* 维度标签 */}
+      {dimensions.map((dim, i) => {
+        const pos = getLabelPosition(i, radius + 28);
+        const isHigh = dim.value >= 50;
+        return (
+          <g key={i}>
+            {/* 主标签 */}
+            <text
+              x={pos.x}
+              y={pos.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="text-sm font-bold"
+              fill={dim.color}
+              style={{ fontSize: '14px', fontWeight: 700 }}
+            >
+              {dim.label}
+            </text>
+            {/* 副标签 - 显示当前倾向 */}
+            <text
+              x={pos.x}
+              y={pos.y + 14}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="text-xs"
+              fill="#6B7280"
+              style={{ fontSize: '10px' }}
+            >
+              {isHigh ? dim.subLabel : dim.fullLabel.split('-')[1]}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* 中心点 */}
+      <circle
+        cx={center}
+        cy={center}
+        r="3"
+        fill="#D1D5DB"
+      />
+    </svg>
+  );
+}
+
 // 动画组件
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const [visible, setVisible] = useState(false);
@@ -33,6 +267,8 @@ function ResultContent() {
   const [personality, setPersonality] = useState(dogPersonalityTypes[0]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const shareCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,6 +300,52 @@ function ResultContent() {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  // 显示 Toast 提示
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2500);
+  };
+
+  // 分享功能处理
+  const handleShare = async () => {
+    const shareData = {
+      title: `我家狗狗是${personality.name}`,
+      text: `${personality.slogan} - 快来测测你家狗狗的性格吧！`,
+      url: window.location.href,
+    };
+
+    // 1. 首选：Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        // 用户取消分享，不做处理
+        if ((err as Error).name === "AbortError") {
+          return;
+        }
+        console.log("Web Share API 失败，尝试复制链接", err);
+      }
+    }
+
+    // 2. 降级：复制链接到剪贴板
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(
+          `${shareData.title}\n${shareData.text}\n${shareData.url}`
+        );
+        showToastMessage("🔗 链接已复制，快去分享给好友吧！");
+        return;
+      } catch (err) {
+        console.log("复制失败", err);
+      }
+    }
+
+    // 3. 兜底：提示手动分享
+    showToastMessage("📸 请截图保存结果，分享给好友看看吧！");
   };
 
   return (
@@ -250,6 +532,7 @@ function ResultContent() {
             
             {/* 分享按钮 - 白色背景 */}
             <button
+              onClick={handleShare}
               className="w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-97 bg-white border-2 border-[#E5E7EB] text-[#6B7280] hover:bg-[#F9FAFB] hover:border-[#D1D5DB]"
             >
               <span>🔗</span>
@@ -273,6 +556,24 @@ function ResultContent() {
             💡 保存图片分享到朋友圈，看看朋友的狗狗是什么性格
           </div>
         </FadeIn>
+
+        {/* Toast 提示 */}
+        {showToast && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            <div 
+              className="px-6 py-4 rounded-2xl shadow-2xl animate-fade-in"
+              style={{ 
+                background: 'rgba(44, 62, 80, 0.95)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              <p className="text-white text-base font-medium text-center whitespace-nowrap">
+                {toastMessage}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 隐藏分享卡片（用于生成图片）*/}
