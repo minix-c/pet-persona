@@ -65,7 +65,7 @@ export default function Home() {
 
         {/* CTA Button - 暖阳橙渐变，胶囊形 */}
         <Link
-          href="/pet-persona/quiz"
+          href="/quiz"
           className="block w-full py-[18px] px-14 bg-gradient-to-br from-[#FF9A56] to-[#FF7A45] text-white text-center rounded-full font-semibold text-xl transition-all active:scale-95"
           style={{ boxShadow: '0 4px 20px rgba(255, 154, 86, 0.4)' }}
         >

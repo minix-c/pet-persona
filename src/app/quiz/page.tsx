@@ -85,7 +85,7 @@ export default function QuizPage() {
     });
 
     const personality = getPersonalityType(scores);
-    router.push(`/pet-persona/result?type=${personality.code}`);
+    router.push(`/result?type=${personality.code}`);
   };
 
   const currentAnswer = answers.find((a) => a.questionId === currentQuestion.id);
